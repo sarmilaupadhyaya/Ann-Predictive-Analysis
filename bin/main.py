@@ -26,7 +26,8 @@ def main():
     process = Preprocess(dataset=args.dataset, train_path=train_path, validation_path=validation_path,
                          config=configs.config)
     datapaths = process.preprocess()
-
+    import pdb
+    pdb.set_trace()
     ds = datasets.DataGenerator(datapaths, mode=args.command, config=process.config)
     model = AnnModel(ds.config)
 

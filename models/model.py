@@ -8,7 +8,6 @@ from configs import configs
 
 
 class AnnModel(BaseModel):
-
     def __init__(self, config):
         """
 
@@ -31,10 +30,12 @@ class AnnModel(BaseModel):
         self.__dict__.update(self.model_params)
 
     def build_model(self):
-
-
-
         activated_output = self.add_hidden_layer("first_layer")
+        prediction = self.output_layer(activated_output)
+        loss = tf.losses.mean_squared_error(prediction, self.target)
+        reduced_mean_loss = tf.reduce_mean(loss)
+        optimizer = tf.train.AdamOptimizer(learning_rate=self.config["learning_rate"]).minimize(loss,
+                                                                                                global_step=self.global_step_tensor)
 
     def add_hidden_layer(self, layer_name):
         """
@@ -47,7 +48,7 @@ class AnnModel(BaseModel):
                                                             )
             # step 2: create the weight variable with proper initialization
             W = tf.get_variable(name=layer_name + "_weights", dtype=tf.float32,
-                                shape=[self.config["input_shape"][-1],self.layer_details[layer_name]["number"]],
+                                shape=[self.config["input_shape"][-1], self.layer_details[layer_name]["number"]],
                                 initializer=weight_initer)
 
             bias = tf.get_variable(name=layer_name + "_b", shape=self.layer_details[layer_name]["number"],
@@ -55,7 +56,7 @@ class AnnModel(BaseModel):
 
             output = tf.nn.xw_plus_b(self.input, W, bias, name=layer_name + "output")
 
-            activated_output = tf.nn.sigmoid(output)
+            activated_output = tf.nn.relu(output)
 
             return activated_output
 
@@ -65,5 +66,21 @@ class AnnModel(BaseModel):
         :param hidden_output:
         :return:
         """
+        import pdb
+        pdb.set_trace()
 
+        weight_initer = tf.truncated_normal_initializer(mean=0.0, stddev=0.01
+                                                        )
+        # step 2: create the weight variable with proper initialization
+        W = tf.get_variable(name="output_weights", dtype=tf.float32,
+                            shape=[self.layer_details["first_layer"]["number"],1],
+                            initializer=weight_initer)
 
+        bias = tf.get_variable(name="output_b", shape=[1],
+                               initializer=tf.zeros_initializer(), dtype=tf.float32)
+
+        output = tf.nn.xw_plus_b(hidden_output, W, bias, name="final_output")
+
+        activated_output = tf.nn.sigmoid(output)
+
+        return activated_output
