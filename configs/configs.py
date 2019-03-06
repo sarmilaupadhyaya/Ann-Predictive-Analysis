@@ -4,20 +4,20 @@ A file containing a config class and the associated hyperparametersssss
 
 config = {
     "traindatadir": "../data/train",
-    "batch_size": 20,
+    "batch_size": 1,
+    "val_batch_size":1,
     "learning_rate": 0.0001,
-    "input_shape": (None, "num_feature"),
+    "input_shape": (None, 15),
     "number_feature": None,
-    "num_epoch": 50,
+    "num_epoch": 1000,
     "checkpoint_path": "../data/output/",
     "max_to_keep": 4,
     "train_log": "../data/log/train",
     "validation_log": "../data/log/val",
-    "input_shape": (None, 7),
-    "FILE_PATHS": {"dd": ("ggg", "")},
+    "FILE_PATHS": {"dd": ("/var/www/labor_productivity_prediction/data/productivity_data.csv", "")},
     "hidden_layer": {
         "first_layer": {
-            "number":8
+            "number":25
         }
     }
 }

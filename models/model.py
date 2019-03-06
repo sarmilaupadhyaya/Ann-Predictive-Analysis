@@ -13,6 +13,7 @@ class AnnModel(BaseModel):
 
         :param config:
         """
+        super(AnnModel, self).__init__(config)
         self.layer_details = config["hidden_layer"]
         self.config = config
         self.input = tf.placeholder(dtype=tf.float32,
@@ -25,7 +26,7 @@ class AnnModel(BaseModel):
 
         self.model_params = defaultdict()
 
-        self.build_model()
+        self.prediction, self.loss, self.optimizer= self.build_model()
         self.init_saver()
         self.__dict__.update(self.model_params)
 
@@ -36,6 +37,7 @@ class AnnModel(BaseModel):
         reduced_mean_loss = tf.reduce_mean(loss)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.config["learning_rate"]).minimize(loss,
                                                                                                 global_step=self.global_step_tensor)
+        return prediction, reduced_mean_loss, optimizer
 
     def add_hidden_layer(self, layer_name):
         """
@@ -66,14 +68,12 @@ class AnnModel(BaseModel):
         :param hidden_output:
         :return:
         """
-        import pdb
-        pdb.set_trace()
 
         weight_initer = tf.truncated_normal_initializer(mean=0.0, stddev=0.01
                                                         )
         # step 2: create the weight variable with proper initialization
         W = tf.get_variable(name="output_weights", dtype=tf.float32,
-                            shape=[self.layer_details["first_layer"]["number"],1],
+                            shape=[self.layer_details["first_layer"]["number"], 1],
                             initializer=weight_initer)
 
         bias = tf.get_variable(name="output_b", shape=[1],
@@ -81,6 +81,6 @@ class AnnModel(BaseModel):
 
         output = tf.nn.xw_plus_b(hidden_output, W, bias, name="final_output")
 
-        activated_output = tf.nn.sigmoid(output)
+        activated_output = tf.nn.relu(output)
 
         return activated_output

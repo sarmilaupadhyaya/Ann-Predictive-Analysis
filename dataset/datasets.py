@@ -14,7 +14,7 @@ class DataGenerator():
         self.__dict__.update(datapaths)
         self.mode = mode
         self.config = config
-        self.test, self.validation = self.split_if_needed()
+        self.split_if_needed()
 
     def load(self, type):
         """
@@ -72,4 +72,16 @@ class DataGenerator():
         return self.features, self.labels
 
     def split_if_needed(self):
-        return "", ""
+
+        train_data, train_label = self.load_numpy_data(self.train)
+
+        if self.validation == "":
+            train_data, validation_data, train_label, validation_label = train_test_split(train_data, train_label,\
+                                                                                           train_size=0.9, test_size=0.1)
+            validation_path = "../data/val/validation_numpy.npz"
+            np.savez(self.train, train_data, train_label)
+            np.savez(validation_path, validation_data, validation_label)
+            self.validation = validation_path
+
+
+
