@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 
@@ -15,6 +16,7 @@ class Preprocess:
         return train
 
 
+
     def preprocess(self):
         """
 
@@ -22,12 +24,12 @@ class Preprocess:
         """
         numpy_path = {}
         for x in ["train", "validation"]:
-            each_path = ""
             path = eval("self." + x)
-            if path == "":
+            each_path = "../data/" + x + "/" + x + "_numpy.npz"
+            result = os.path.exists(each_path)
+            if result:
                 pass
-            else:
-                each_path = "../data/" + x + "/" + x + "_numpy.npz"
+            elif result == False and path != "":
                 load_data = pd.read_csv(path)
                 load_data["Labor percent"] = load_data["Labor percent"].apply(lambda x: float(x) / 100)
                 load_data = load_data.dropna()
@@ -44,8 +46,9 @@ class Preprocess:
                 pdb.set_trace()
                 numpy_data = load_data.as_matrix().astype(np.float32)
                 np.savez(each_path, numpy_data, labels)
+            else:
+                each_path = ""
             numpy_path[x] = each_path
-
 
         return numpy_path
 

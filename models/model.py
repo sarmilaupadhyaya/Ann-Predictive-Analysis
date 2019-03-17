@@ -35,6 +35,7 @@ class AnnModel(BaseModel):
         prediction = self.output_layer(activated_output)
         loss = tf.losses.mean_squared_error(prediction, self.target)
         reduced_mean_loss = tf.reduce_mean(loss)
+        tf.summary.scalar("loss", reduced_mean_loss)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.config["learning_rate"]).minimize(loss,
                                                                                                 global_step=self.global_step_tensor)
         return prediction, reduced_mean_loss, optimizer

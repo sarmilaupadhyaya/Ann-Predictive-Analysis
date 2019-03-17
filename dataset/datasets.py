@@ -74,11 +74,13 @@ class DataGenerator():
     def split_if_needed(self):
 
         train_data, train_label = self.load_numpy_data(self.train)
+        import pdb
+        pdb.set_trace()
 
         if self.validation == "":
             train_data, validation_data, train_label, validation_label = train_test_split(train_data, train_label,\
                                                                                            train_size=0.9, test_size=0.1)
-            validation_path = "../data/val/validation_numpy.npz"
+            validation_path = "../data/validation/validation_numpy.npz"
             np.savez(self.train, train_data, train_label)
             np.savez(validation_path, validation_data, validation_label)
             self.validation = validation_path

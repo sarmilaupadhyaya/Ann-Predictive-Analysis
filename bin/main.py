@@ -12,6 +12,7 @@ from utils.preprocessing import Preprocess
 from dataset import datasets
 from models.model import AnnModel
 from trainers.trainer import Trainer
+from utils.logger import Logger
 
 
 def main():
@@ -29,11 +30,18 @@ def main():
     datapaths = process.preprocess()
     ds = datasets.DataGenerator(datapaths, mode=args.command, config=process.config)
     model = AnnModel(ds.config)
-
-    with tf.Session() as sess:
-        trainer = Trainer(model=model, data_gen=ds, session=sess, config=process.config)
-        sess.run(tf.global_variables_initializer())
-        s = sess.run(trainer.training_process())
+    if args.command == "train":
+        with tf.Session() as sess:
+            logger = Logger(config=configs.config, sess=sess)
+            trainer = Trainer(model=model, data_gen=ds, session=sess, config=process.config, logger = logger)
+            sess.run(tf.global_variables_initializer())
+            s = sess.run(trainer.training_process())
+    elif args.command == "validation":
+        with tf.Session() as sess:
+            model.load(sess)
+            logger = Logger(config=configs.config, sess=sess)
+            trainer = Trainer(model=model, data_gen=ds, session=sess, config=process.config,logger = logger)
+            sess.run(trainer.plot_prediction())
 
 
 if __name__ == '__main__':
