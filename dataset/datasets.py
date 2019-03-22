@@ -48,7 +48,7 @@ class DataGenerator():
         elif type == "val":
             validation = self.load_numpy_data(self.validation)
             dataset = tf.data.Dataset.from_tensor_slices((validation[0], validation[1]))
-            dataset = dataset.shuffle(buffer_size=1000)
+            # dataset = dataset.shuffle(buffer_size=1000)
             dataset = dataset.batch(configs.config["val_batch_size"])
 
         iterator = dataset.make_initializable_iterator()

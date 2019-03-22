@@ -1,2 +1,2 @@
-model_checkpoint_path: "question-classification-34000"
-all_model_checkpoint_paths: "question-classification-34000"
+model_checkpoint_path: "question-classification-14000"
+all_model_checkpoint_paths: "question-classification-14000"

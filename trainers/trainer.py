@@ -140,9 +140,9 @@ class Trainer:
             val_element = self.initialize_epoch_val(iterator_val)
             self.train_epoch(next_element, val_element)
         print('End of training')
-        # self.model.save(self.session)
+        self.model.save(self.session)
         val_element = self.initialize_epoch_val(iterator_val)
-        self.plot_prediction(val_element)
+        self.plot_prediction()
         return 0
 
     def plot_prediction(self):
@@ -153,19 +153,21 @@ class Trainer:
         iterator_val = self.data_gen.load(type="val")
         val_element = self.initialize_epoch_val(iterator_val)
         multiple = []
+        loss = []
         try:
             while 1:
                 data_point = self.session.run(val_element)
                 single = []
-                prediction = self.session.run(
-                        self.model.prediction,
-                        feed_dict={self.model.input: data_point[0]})
+                prediction, losses = self.session.run(
+                        [self.model.prediction, self.model.loss],
+                        feed_dict={self.model.input: data_point[0],self.model.target:data_point[1]})
                 single.append(prediction)
                 single.extend(data_point[1].reshape(1))
                 multiple.append(single)
+                loss.append(losses)
 
         except tf.errors.OutOfRangeError:
-            pass
+            print("Validation loss is: ", np.mean(loss))
 
         import pandas as pd
         import matplotlib.pyplot as plt
