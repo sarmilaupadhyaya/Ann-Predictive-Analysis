@@ -9,7 +9,7 @@ config = {
     "learning_rate": 0.0003,
     "input_shape": (None, 15),
     "number_feature": None,
-    "num_epoch": 500,
+    "num_epoch": 1000,
     "checkpoint_path": "../data/output/",
     "max_to_keep": 4,
     "train_log": "../data/log/train",
@@ -18,7 +18,7 @@ config = {
     "FILE_PATHS": {"dd": ("/var/www/labor_productivity_prediction/data/productivity_data.csv", "")},
     "hidden_layer": {
         "first_layer": {
-            "number":30
+            "number":100
         }
     }
 }
