@@ -58,6 +58,7 @@ class Trainer:
 
         """
 
+
         summary,prediction, self.global_step_value, self.current_batch_value, optimizer, loss = self.session.run(
                 [self.logger.merge_all,self.model.prediction, self.model.global_step_tensor, self.model.increment_batch_op,
                  self.model.optimizer,

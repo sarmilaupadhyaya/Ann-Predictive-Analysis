@@ -81,10 +81,11 @@ class DataGenerator():
         train_data, train_label = self.load_numpy_data(self.train)
 
         if self.validation == "" and self.test == "":
+
             train_data, validation_data, train_label, validation_label = train_test_split(train_data, train_label, \
                                                                                           train_size=0.9, test_size=0.1)
-            train_data, test_data, train_label, test_label = train_test_split(train_data, train_label, \
-                                                                                          train_size=0.8, test_size=0.2)
+            # train_data, test_data, train_label, test_label = train_test_split(train_data, train_label, \
+            #                                                                               train_size=0.8, test_size=0.1)
 
             validation_path = "../data/validation/validation_numpy.npz"
             test_path = "../data/test/test_numpy.npz"

@@ -7,9 +7,9 @@ ax = plt.gca()
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
-df = pd.read_csv("../data/final_data.csv")
+df = pd.read_csv("../data/productivity_data.csv")
 y_train = df[["Actual Productivity (m3/hr)"]]
-del df["Actual Productivity (m3/hr)"]
+
 
 
 def normailize(value, mean, std):
@@ -21,15 +21,8 @@ def normailize(value, mean, std):
 #     numpy_format = df[column].as_matrix()
 #     mean, std = numpy_format.mean(), numpy_format.std()
 #     df[column] = df[column].apply(lambda x: normailize(x, mean, std))
+del df["Actual Productivity (m3/hr)"]
 
-
-df = df[['Time', 'Number of labor during construction work', 'Labor percent',
-         'Floor Area', 'Floor Height', 'Temperature', 'Precipitation',
-         'Alterations in design or drawings', 'Material shortages',
-         'Lack of labor surveillance', 'Equiment efficiency',
-         'Improvement in construction method', 'Accidents',
-         'Haulage of material within construction site',
-         'Unsuitablity of material storage location']]
 
 train_data, validation_data, train_label, validation_label = train_test_split(df, y_train, \
                                                                               train_size=0.9, test_size=0.1)

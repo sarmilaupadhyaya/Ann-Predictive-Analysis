@@ -31,6 +31,8 @@ class Preprocess:
                 pass
             elif result == False and path != "":
                 load_data = pd.read_csv(path)
+                import pdb
+                pdb.set_trace()
                 load_data["Labor percent"] = load_data["Labor percent"].apply(lambda x: float(x) / 100)
                 load_data = load_data.dropna()
                 labels = np.expand_dims(load_data["Actual Productivity (m3/hr)"].as_matrix().astype(np.float32), axis=1)
