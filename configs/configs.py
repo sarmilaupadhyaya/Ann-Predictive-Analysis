@@ -7,7 +7,7 @@ config = {
     "batch_size": 1,
     "val_batch_size":1,
     "learning_rate": 0.00035,
-    "input_shape": (None, 14),
+    "input_shape": (None, 15),
     "number_feature": None,
     "num_epoch": 1000,
     "checkpoint_path": "../data/output/",

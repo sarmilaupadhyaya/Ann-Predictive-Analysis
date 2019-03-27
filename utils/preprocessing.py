@@ -37,7 +37,7 @@ class Preprocess:
                 load_data = load_data.dropna()
                 labels = np.expand_dims(load_data["Actual Productivity (m3/hr)"].as_matrix().astype(np.float32), axis=1)
                 del load_data["Actual Productivity (m3/hr)"]
-                del load_data["Improvement in construction method"]
+                # del load_data["Improvement in construction method"]
                 print(len(list(load_data.columns)))
                 # normalization
                 print(len(load_data))
