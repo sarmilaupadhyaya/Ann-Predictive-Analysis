@@ -1,16 +1,16 @@
 Feature,Importance
-Haulage of material within construction site,0.7700149748107312
-Labor percent,0.24664861593717946
-Equiment efficiency,0.14081740795843012
-Precipitation,0.12705044344548178
-Number of labor during construction work,0.03722874436457524
-Temperature,0.033732887298071335
-Floor area,0.03020171086217127
-Time,0.019439628378487228
-Floor height (ft),0.0054620001356446846
-Lack of labor surveillance,0.0035154537365373884
-Unsuitablity of material storage location,0.0018257998096447015
-Improvement in construction method,0.0010456484775602792
-Alterations in design or drawings,0.0004712091174727817
-Material shortages,0.0004551120328567526
-Accidents,0.0002257540608209263
+Haulage of material within construction site,0.6724219822867296
+Equiment efficiency,0.33777583764597168
+Precipitation,0.32484714914988337
+Labor percent,0.06671156556768498
+Number of labor during construction work,0.04584665656876641
+Temperature,0.044336380985461554
+Floor area,0.034936550780666265
+Time,0.012559066310659617
+Lack of labor surveillance,0.00720853921787723
+Floor height (ft),0.003714503843890271
+Alterations in design or drawings,0.0008256982226345633
+Unsuitablity of material storage location,0.0005344588945527251
+Accidents,0.00029062474389196513
+Improvement in construction method,0.0002008203787774443
+Material shortages,0.0001228308159836322
