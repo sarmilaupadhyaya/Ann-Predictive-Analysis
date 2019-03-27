@@ -15,10 +15,10 @@ config = {
     "train_log": "../data/log/train",
     "validation_log": "../data/log/val",
     "test_log": "../data/log/test",
-    "FILE_PATHS": {"dd": ("/var/www/labor_productivity_prediction/data/productivity_data.csv", "","")},
+    "FILE_PATHS": {"dd": ("/var/www/labor_productivity_prediction/data/final_data.csv", "","")},
     "hidden_layer": {
         "first_layer": {
-            "number":30
+            "number":35
         }
     }
 }

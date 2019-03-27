@@ -53,6 +53,6 @@ ax = plt.gca()
 # print(sum(perm_imp_rfpimp['Importance'].tolist()))
 
 perm_imp_rfpimp = pd.read_csv("../data/feature.csv")
-perm_imp_rfpimp["feature"] = perm_imp_rfpimp.index
-perm_imp_rfpimp.plot(kind='bar',x='feature',y='Importance',ax=ax)
+# perm_imp_rfpimp["feature"] = perm_imp_rfpimp.index
+perm_imp_rfpimp.plot(kind='bar',x='Feature',y='Importance',ax=ax)
 plt.show()
