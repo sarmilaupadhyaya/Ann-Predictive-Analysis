@@ -142,7 +142,7 @@ class Trainer:
         print('End of training')
         # self.model.save(self.session)
         val_element = self.initialize_epoch_val(iterator_val)
-        self.plot_prediction(val_element)
+        self.plot_prediction_test()
         return 0
 
     def plot_prediction(self):
@@ -175,3 +175,37 @@ class Trainer:
         plt.plot(dataframe_prediction["Actual"],label = "Actual")
         plt.legend()
         plt.show()
+
+    def plot_prediction_test(self):
+        """
+
+        :return:
+        """
+        iterator_val = self.data_gen.load(type="test")
+        val_element = self.initialize_epoch_val(iterator_val)
+        multiple = []
+        losses = []
+        try:
+            while 1:
+                data_point = self.session.run(val_element)
+                single = []
+                prediction, loss = self.session.run(
+                        [self.model.prediction,self.model.loss],
+                        feed_dict={self.model.input: data_point[0], self.model.target: data_point[1]})
+                single.append(prediction)
+                single.extend(data_point[1].reshape(1))
+                multiple.append(single)
+                losses.append(loss)
+
+        except tf.errors.OutOfRangeError:
+            pass
+        print("loss:",np.mean(losses) )
+        import pandas as pd
+        import matplotlib.pyplot as plt
+        dataframe_prediction = pd.DataFrame(multiple, columns=["Predicted", "Actual"])
+        dataframe_prediction["Predicted"] = dataframe_prediction.Predicted.apply(lambda x: x[0][0])
+        plt.plot(dataframe_prediction["Predicted"], label="Predicted")
+        plt.plot(dataframe_prediction["Actual"], label="Actual")
+        plt.legend()
+        plt.show()
+

@@ -50,6 +50,11 @@ class DataGenerator():
             dataset = tf.data.Dataset.from_tensor_slices((validation[0], validation[1]))
             dataset = dataset.shuffle(buffer_size=1000)
             dataset = dataset.batch(configs.config["val_batch_size"])
+        elif type == "test":
+            validation = self.load_numpy_data(self.test)
+            dataset = tf.data.Dataset.from_tensor_slices((validation[0], validation[1]))
+            dataset = dataset.shuffle(buffer_size=1000)
+            dataset = dataset.batch(configs.config["val_batch_size"])
 
         iterator = dataset.make_initializable_iterator()
         return iterator
@@ -74,16 +79,21 @@ class DataGenerator():
     def split_if_needed(self):
 
         train_data, train_label = self.load_numpy_data(self.train)
-        import pdb
-        pdb.set_trace()
 
-        if self.validation == "":
-            train_data, validation_data, train_label, validation_label = train_test_split(train_data, train_label,\
-                                                                                           train_size=0.9, test_size=0.1)
+        if self.validation == "" and self.test == "":
+            train_data, validation_data, train_label, validation_label = train_test_split(train_data, train_label, \
+                                                                                          train_size=0.9, test_size=0.1)
+            train_data, test_data, train_label, test_label = train_test_split(train_data, train_label, \
+                                                                                          train_size=0.8, test_size=0.2)
+
             validation_path = "../data/validation/validation_numpy.npz"
+            test_path = "../data/test/test_numpy.npz"
             np.savez(self.train, train_data, train_label)
             np.savez(validation_path, validation_data, validation_label)
+            np.savez(test_path, validation_data, validation_label)
             self.validation = validation_path
+            self.test = test_path
+
 
 
 

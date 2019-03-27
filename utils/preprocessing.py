@@ -23,7 +23,7 @@ class Preprocess:
         :return:
         """
         numpy_path = {}
-        for x in ["train", "validation"]:
+        for x in ["train", "validation", "test"]:
             path = eval("self." + x)
             each_path = "../data/" + x + "/" + x + "_numpy.npz"
             result = os.path.exists(each_path)
@@ -42,8 +42,6 @@ class Preprocess:
                     numpy_format = load_data[column].as_matrix()
                     mean, std = numpy_format.mean(), numpy_format.std()
                     load_data[column] = load_data[column].apply(lambda x : self.normailize(x, mean, std))
-                import pdb
-                pdb.set_trace()
                 numpy_data = load_data.as_matrix().astype(np.float32)
                 np.savez(each_path, numpy_data, labels)
             else:
