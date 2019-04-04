@@ -87,11 +87,13 @@ class DataGenerator():
             # train_data, test_data, train_label, test_label = train_test_split(train_data, train_label, \
             #                                                                               train_size=0.8, test_size=0.1)
 
+            test_data = np.concatenate((train_data[0:10], validation_data),axis = 0)
+            test_label = np.concatenate((train_label[0:10], validation_label),axis = 0)
             validation_path = "../data/validation/validation_numpy.npz"
             test_path = "../data/test/test_numpy.npz"
             np.savez(self.train, train_data, train_label)
             np.savez(validation_path, validation_data, validation_label)
-            np.savez(test_path, validation_data, validation_label)
+            np.savez(test_path, test_data, test_label)
             self.validation = validation_path
             self.test = test_path
 

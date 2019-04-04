@@ -11,14 +11,14 @@ config = {
     "number_feature": None,
     "num_epoch": 1000,
     "checkpoint_path": "../data/output/",
-    "max_to_keep": 4,
+    "max_to_keep": 100,
     "train_log": "../data/log/train",
     "validation_log": "../data/log/val",
     "test_log": "../data/log/test",
-    "FILE_PATHS": {"dd": ("/var/www/labor_productivity_prediction/data/final_data.csv", "","")},
+    "FILE_PATHS": {"dd": ("../data/productivity_data.csv", "","")},
     "hidden_layer": {
         "first_layer": {
-            "number":35
+            "number":31
         }
     }
 }

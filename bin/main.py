@@ -5,7 +5,7 @@ import argparse
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv(), override=True)
-sys.path.append(os.environ.get("PROJECT_PATH"))
+sys.path.append("/home/sharmila/Desktop/Ann-Predictive-Analysis")
 
 from configs import configs
 from utils.preprocessing import Preprocess
@@ -42,6 +42,23 @@ def main():
             logger = Logger(config=configs.config, sess=sess)
             trainer = Trainer(model=model, data_gen=ds, session=sess, config=process.config,logger = logger)
             sess.run(trainer.plot_prediction_test())
+    elif args.command == "validation":
+        with tf.Session() as sess:
+            model.load(sess)
+            logger = Logger(config=configs.config, sess=sess)
+            trainer = Trainer(model=model, data_gen=ds, session=sess, config=process.config,logger = logger)
+            sess.run(trainer.plot_prediction())
+    elif args.command == "analysis":
+        with tf.Session() as sess:
+            model.load(sess)
+            logger = Logger(config=configs.config, sess=sess)
+            trainer = Trainer(model=model, data_gen=ds, session=sess, config=process.config,logger = logger)
+            sess.run(trainer.analysis())
+
+
+
+
+
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from configs import configs
+import pandas as pd
 
 
 class Trainer:
@@ -141,7 +142,7 @@ class Trainer:
             val_element = self.initialize_epoch_val(iterator_val)
             self.train_epoch(next_element, val_element)
         print('End of training')
-        # self.model.save(self.session)
+        self.model.save(self.session)
         val_element = self.initialize_epoch_val(iterator_val)
         self.plot_prediction_test()
         return 0
@@ -154,19 +155,23 @@ class Trainer:
         iterator_val = self.data_gen.load(type="val")
         val_element = self.initialize_epoch_val(iterator_val)
         multiple = []
+        losss = []
         try:
             while 1:
                 data_point = self.session.run(val_element)
                 single = []
-                prediction = self.session.run(
-                        self.model.prediction,
-                        feed_dict={self.model.input: data_point[0]})
+                prediction,loss = self.session.run(
+                        [self.model.prediction, self.model.loss],
+                        feed_dict={self.model.input: data_point[0], self.model.target: data_point[1]})
                 single.append(prediction)
                 single.extend(data_point[1].reshape(1))
                 multiple.append(single)
+                losss.append(loss)
 
         except tf.errors.OutOfRangeError:
             pass
+
+        print("loss: " , np.mean(losss))
 
         import pandas as pd
         import matplotlib.pyplot as plt
@@ -201,12 +206,66 @@ class Trainer:
         except tf.errors.OutOfRangeError:
             pass
         print("loss:",np.mean(losses) )
-        import pandas as pd
         import matplotlib.pyplot as plt
         dataframe_prediction = pd.DataFrame(multiple, columns=["Predicted", "Actual"])
+
+        # saving dataframe
+        new_data = dataframe_prediction
+        dataframe_prediction["Difference"] = dataframe_prediction['Actual']- dataframe_prediction['Predicted']
+        dataframe_prediction.to_csv("../data/actual_vs_predicted.csv")
         dataframe_prediction["Predicted"] = dataframe_prediction.Predicted.apply(lambda x: x[0][0])
         plt.plot(dataframe_prediction["Predicted"], label="Predicted")
         plt.plot(dataframe_prediction["Actual"], label="Actual")
         plt.legend()
         plt.show()
+
+    def normailize(self, value, mean, std):
+
+        train = (value - mean) / std
+        return train
+
+    def analysis(self):
+
+
+        df = pd.read_csv("../data/productivity_data.csv")
+        df["Labor percent"] = df["Labor percent"].apply(lambda x: float(x) / 100)
+        load_data = df.dropna()
+        labels = np.expand_dims(load_data["Actual Productivity (m3/hr)"].as_matrix().astype(np.float32), axis=1)
+        # normalization
+        for column in list(load_data.columns):
+            if column != "Actual Productivity (m3/hr)":
+                numpy_format = load_data[column].as_matrix()
+                mean, std = numpy_format.mean(), numpy_format.std()
+                load_data[column] = load_data[column].apply(lambda x: self.normailize(x, mean, std))
+        for column in list(load_data.columns):
+            a = []
+            b = []
+            if column != "Actual Productivity (m3/hr)":
+                min = load_data[column].min()
+                max = load_data[column].max()
+                row = load_data.iloc[20]
+                i = max
+                for __ in range(20):
+                    row[column] = i
+                    a.append(i)
+                    X = np.array(list(row)[:15]).reshape([1,15])
+                    prediction = self.session.run( self.model.prediction,
+                        feed_dict={self.model.input: X})
+                    b.append(prediction.tolist()[0][0])
+                    i+= 0.05
+            temp = pd.DataFrame([], columns = ["Actual Productivity (m3/hr)",column])
+            temp["Actual Productivity (m3/hr)"] = pd.Series(b)
+
+            temp[column] = pd.Series(a)
+            import matplotlib.pyplot as plt
+            temp.plot(x = column, y = "Actual Productivity (m3/hr)")
+            plt.show()
+
+
+
+
+
+
+
+
 
