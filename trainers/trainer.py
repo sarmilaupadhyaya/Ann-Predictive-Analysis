@@ -191,9 +191,11 @@ class Trainer:
         val_element = self.initialize_epoch_val(iterator_val)
         multiple = []
         losses = []
+        data = []
         try:
             while 1:
                 data_point = self.session.run(val_element)
+                a = []
                 single = []
                 prediction, loss = self.session.run(
                         [self.model.prediction,self.model.loss],
@@ -202,12 +204,14 @@ class Trainer:
                 single.extend(data_point[1].reshape(1))
                 multiple.append(single)
                 losses.append(loss)
+                single = [data_point[1], prediction]
+                data.append(single)
 
         except tf.errors.OutOfRangeError:
             pass
         print("loss:",np.mean(losses) )
         import matplotlib.pyplot as plt
-        dataframe_prediction = pd.DataFrame(multiple, columns=["Predicted", "Actual"])
+        dataframe_prediction = pd.DataFrame(data, columns=["Actual", "Predicted"])
 
         # saving dataframe
         new_data = dataframe_prediction
@@ -244,7 +248,7 @@ class Trainer:
                 min = load_data[column].min()
                 max = load_data[column].max()
                 row = load_data.iloc[20]
-                i = max
+                i = 0.1
                 for __ in range(20):
                     row[column] = i
                     a.append(i)
@@ -256,7 +260,14 @@ class Trainer:
             temp = pd.DataFrame([], columns = ["Actual Productivity (m3/hr)",column])
             temp["Actual Productivity (m3/hr)"] = pd.Series(b)
 
+            import pdb
+            pdb.set_trace()
+            if column in ["Floor height (ft)","Alterations in design or drawings", "Improvement in construction method"]:
+                a = a[::-1]
+
             temp[column] = pd.Series(a)
+
+
             import matplotlib.pyplot as plt
             temp.plot(x = column, y = "Actual Productivity (m3/hr)")
             plt.show()
