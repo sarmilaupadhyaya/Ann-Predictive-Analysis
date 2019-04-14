@@ -55,6 +55,13 @@ def main():
             trainer = Trainer(model=model, data_gen=ds, session=sess, config=process.config,logger = logger)
             sess.run(trainer.analysis())
 
+    elif args.command == "analysis2":
+        with tf.Session() as sess:
+            model.load(sess)
+            logger = Logger(config=configs.config, sess=sess)
+            trainer = Trainer(model=model, data_gen=ds, session=sess, config=process.config,logger = logger)
+            sess.run(trainer.analysis_2())
+
 
 
 

@@ -177,8 +177,8 @@ class Trainer:
         import matplotlib.pyplot as plt
         dataframe_prediction = pd.DataFrame(multiple, columns=["Predicted","Actual"])
         dataframe_prediction["Predicted"] = dataframe_prediction.Predicted.apply(lambda x: x[0][0])
-        plt.plot(dataframe_prediction["Predicted"], label ="Predicted")
-        plt.plot(dataframe_prediction["Actual"],label = "Actual")
+        plt.plot(dataframe_prediction["Predicted"], label ="Predicted", linestyle = ":")
+        plt.plot(dataframe_prediction["Actual"],label = "Actual",  linestyle = "-")
         plt.legend()
         plt.show()
 
@@ -218,8 +218,8 @@ class Trainer:
         dataframe_prediction["Difference"] = dataframe_prediction['Actual']- dataframe_prediction['Predicted']
         dataframe_prediction.to_csv("../data/actual_vs_predicted.csv")
         dataframe_prediction["Predicted"] = dataframe_prediction.Predicted.apply(lambda x: x[0][0])
-        plt.plot(dataframe_prediction["Predicted"], label="Predicted")
-        plt.plot(dataframe_prediction["Actual"], label="Actual")
+        plt.plot(dataframe_prediction["Predicted"], label="Predicted", linestyle = ":")
+        plt.plot(dataframe_prediction["Actual"], label="Actual", linestyle = "-")
         plt.legend()
         plt.show()
 
@@ -260,8 +260,6 @@ class Trainer:
             temp = pd.DataFrame([], columns = ["Actual Productivity (m3/hr)",column])
             temp["Actual Productivity (m3/hr)"] = pd.Series(b)
 
-            import pdb
-            pdb.set_trace()
             if column in ["Floor height (ft)","Alterations in design or drawings", "Improvement in construction method"]:
                 a = a[::-1]
 
@@ -271,6 +269,55 @@ class Trainer:
             import matplotlib.pyplot as plt
             temp.plot(x = column, y = "Actual Productivity (m3/hr)")
             plt.show()
+
+    def analysis_2(self):
+
+
+        df = pd.read_csv("../data/productivity_data.csv")
+        df["Labor percent"] = df["Labor percent"].apply(lambda x: float(x) / 100)
+        load_data = df.dropna()
+        labels = np.expand_dims(load_data["Actual Productivity (m3/hr)"].as_matrix().astype(np.float32), axis=1)
+        # normalization
+        temp = pd.DataFrame([], columns=[ x for x in list(load_data.columns) if x != "Actual Productivity (m3/hr)"])
+        for column in list(load_data.columns):
+            if column != "Actual Productivity (m3/hr)":
+                numpy_format = load_data[column].as_matrix()
+                mean, std = numpy_format.mean(), numpy_format.std()
+                load_data[column] = load_data[column].apply(lambda x: self.normailize(x, mean, std))
+        for column in list(load_data.columns):
+            b = []
+            if column != "Actual Productivity (m3/hr)":
+                row = load_data.iloc[20]
+                i = 0.1
+                for __ in range(20):
+                    row[column] = i
+                    X = np.array(list(row)[:15]).reshape([1,15])
+                    prediction = self.session.run( self.model.prediction,
+                        feed_dict={self.model.input: X})
+                    b.append(prediction.tolist()[0][0])
+                    i+= 0.05
+            temp[column] = pd.Series(b)
+        temp = temp.dropna(axis = 1)
+
+        temp = temp.pct_change()
+        temp = temp * 100
+        temp = temp.mean(axis = 0)
+        for column in list(load_data.columns):
+            if column in ["Floor height (ft)", "Alterations in design or drawings",
+                          "Improvement in construction method"]:
+                temp[column] = -1 * temp[column]
+        import matplotlib.pyplot as plt
+        fig = plt.figure(figsize=(17, 17))
+        plt.ylabel("Change in Productivity in Percentage (%)")
+        temp.plot(kind = "bar")
+        plt.gcf().subplots_adjust(bottom=0.15)
+        plt.show()
+
+
+
+            # import matplotlib.pyplot as plt
+            # temp.plot(x = column, y = "Actual Productivity (m3/hr)")
+            # plt.show()
 
 
 
